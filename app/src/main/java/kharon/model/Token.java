@@ -5,6 +5,9 @@ import java.util.Optional;
 import kharon.utilities.ConfigurationUtility;
 import kharon.utilities.StringUtility;
 
+/**
+ * @author KOTBI Abderrahmane
+ */
 public record Token(String type, String value, String equivalent) {
 
     public static String TOKEN_TYPE = "Unknown";
@@ -21,15 +24,15 @@ public record Token(String type, String value, String equivalent) {
         return TOKEN_TYPE = getTokenType(value).orElse("Unknown");
     }
 
-    Token withType(String type) {
+    public Token withType(String type) {
         return new Token(type, this.value(), this.equivalent());
     }
 
-    Token withValue(String value) {
+    public Token withValue(String value) {
         return new Token(this.type(), value, this.equivalent());
     }
 
-    Token withEquivalent(String equivalent) {
+    public Token withEquivalent(String equivalent) {
         return new Token(this.type(), this.value(), equivalent);
     }
 

@@ -3,15 +3,23 @@
  */
 package kharon;
 
+import kharon.core.Binder;
+import kharon.core.Parser;
+import kharon.core.Scanner;
+
 /**
  * @author KOTBI Abderrahmane
  */
 public class Launcher {
-    public String getGreeting() {
-        return "Hello test!";
+
+    private static void launch(String readPath, String writePath) {
+        Binder.bind(Parser.parse(Scanner.scan(readPath)), writePath);
     }
 
     public static void main(String[] args) {
-        System.out.println(new Launcher().getGreeting());
+        String rootPath = "/home/kotbi/Documents/Projects/kharon/app/src/main/resources/test/";
+        String readPath = rootPath + "read.rexx";
+        String writePath = rootPath + "write.rexx";
+        launch(readPath, writePath);
     }
 }

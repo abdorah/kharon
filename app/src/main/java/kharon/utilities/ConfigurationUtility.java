@@ -4,9 +4,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * @author KOTBI Abderrahmane
@@ -15,46 +17,62 @@ public class ConfigurationUtility {
 
     private static String PATH_TO_CONFIGURATION = "/home/kotbi/Documents/Projects/kharon/app/src/main/resources/configuration.properties";
 
-    public static void setPath(String path){
+    public static void setPath(String path) {
         PATH_TO_CONFIGURATION = path;
     }
 
-    public static void resetPath(){
+    public static void resetPath() {
         PATH_TO_CONFIGURATION = "/home/kotbi/Documents/Projects/kharon/app/src/main/resources/configuration.properties";
     }
 
     public static Optional<String> getProperty(String key) {
-
-        String value = null;
-
-        try (InputStream inputStream = new FileInputStream(PATH_TO_CONFIGURATION)) {
-
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            value = properties.getProperty(key);
-
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return Optional.ofNullable(value);
+        StringUtility.Logger("DEBUG", "The key reached was: " + key + ".");
+        return Optional.of(getProperties().getProperty(key));
     }
 
     public static LinkedList<String> getProperties(String key) {
         var values = new LinkedList<String>();
 
+        if (getProperty(key).isPresent()) {
+            values.addAll(Arrays.asList(getProperty(key).get().split(",")));
+        }
+
+        return values;
+    }
+
+    public static LinkedList<String> getPropertyChildren(String rootkey) {
+        var values = new LinkedList<String>();
+        for (String name : getProperties().stringPropertyNames()) {
+            if (name.startsWith(rootkey)) {
+                values.add(name);
+            }
+        }
+        return values;
+    }
+
+    public static Optional<String> getEntry(String key) {
+        return Optional.of(key + ":" + getProperty(key).get());
+    }
+
+    public static Collection<String> getChildrenEntry(String rootKey) {
+        return ConfigurationUtility.getPropertyChildren(rootKey)
+                .stream()
+                .map(key -> ConfigurationUtility.getEntry(key).get())
+                .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    private static Properties getProperties() {
+        Properties properties = new Properties();
+
         try (InputStream inputStream = new FileInputStream(PATH_TO_CONFIGURATION)) {
 
-            Properties properties = new Properties();
             properties.load(inputStream);
-            if(properties.getProperty(key) != null){
-                values.addAll(Arrays.asList(properties.getProperty(key).split(",")));
-            }
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 
-        return values;
+        return properties;
     }
 
 }

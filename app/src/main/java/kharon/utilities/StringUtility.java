@@ -22,4 +22,12 @@ public class StringUtility {
                 .toString());
     }
 
+    public static String resolveKey(String entry){
+        return entry.split(":").length >= 1 ? entry.split(":")[0] : "";
+    }
+
+    public static String resolveValue(String entry){
+        return entry.split(":").length > 1 ? entry.split(":")[1] : "";
+    }
+
 }

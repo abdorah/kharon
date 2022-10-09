@@ -1,4 +1,4 @@
-package kharon.compiler;
+package kharon.core;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
@@ -9,13 +9,27 @@ import kharon.utilities.ConfigurationUtility;
 import kharon.utilities.FilesUtility;
 import kharon.utilities.StringUtility;
 
+/**
+ * @author KOTBI Abderrahmane
+ */
 public class Scanner {
 
     private StreamTokenizer streamTokenizer;
 
-    private Scanner beforeReading(Scanner scanner, String path) {
+    /**
+     * This method read the code of a program from a file defined by the parameter:
+     * 
+     * @param path
+     * @return
+     *         It uses the streamTokenizer after reseting its syntax. This
+     *         preparation process can be changed if there was more keys
+     *         provided in the properties file.
+     */
+    private static Scanner beforeProcess(String path) {
+        Scanner scanner = new Scanner();
         scanner.streamTokenizer = new StreamTokenizer(FilesUtility.read(path));
         scanner.streamTokenizer.resetSyntax();
+        // Actual minimum-required configuration:
         scanner.streamTokenizer.eolIsSignificant(
                 Boolean.parseBoolean(ConfigurationUtility.getProperty("scanner.eolIsSignificant").get()));
         scanner.streamTokenizer.slashSlashComments(
@@ -27,7 +41,7 @@ public class Scanner {
         return scanner;
     }
 
-    private LinkedList<Token> processing(Scanner scanner) {
+    private static LinkedList<Token> processing(Scanner scanner) {
 
         String type = "";
         String value = "";
@@ -35,8 +49,11 @@ public class Scanner {
 
         try {
             scanner.streamTokenizer.nextToken();
-            value = scanner.streamTokenizer.sval;//resolveValue(value, scanner.streamTokenizer.sval);
-            type = resolveType(value);//resolveOrdinaryType(scanner.streamTokenizer.ttype);//resolveType(type, scanner.streamTokenizer.ttype);
+            value = scanner.streamTokenizer.sval;
+            type = Token.getType(value != null ? value : "hello");
+            // resolveValue(value, scanner.streamTokenizer.sval);
+            // resolveOrdinaryType(scanner.streamTokenizer.ttype);
+            // resolveType(type, scanner.streamTokenizer.ttype);
             program.add(new Token(type, value, ""));
         } catch (IOException ioe) {
             StringUtility.Logger("ERROR", "End of file reached without reading anything");
@@ -46,8 +63,8 @@ public class Scanner {
         while (StreamTokenizer.TT_EOF != scanner.streamTokenizer.ttype) {
             try {
                 scanner.streamTokenizer.nextToken();
-                value = scanner.streamTokenizer.sval;//resolveValue(value, scanner.streamTokenizer.sval);
-                type = resolveType(value);//resolveOrdinaryType(scanner.streamTokenizer.ttype);//resolveType(type, scanner.streamTokenizer.ttype);
+                value = scanner.streamTokenizer.sval;
+                type = Token.getType(value != null ? value : "hello");
                 program.add(new Token(type, value, ""));
             } catch (IOException ioe) {
                 StringUtility.Logger("ERROR", "End of file wasn't reached. Something went wrong while processing.");
@@ -58,28 +75,8 @@ public class Scanner {
         return program;
     }
 
-    public LinkedList<Token> afterReading(Scanner scanner, String path) {
-        return processing(beforeReading(scanner, path));
-    }
-
-    @Deprecated
-    private String resolveOrdinaryType(int ttype) {
-        switch (ttype) {
-            case StreamTokenizer.TT_EOF:
-                return "EOF";
-            case StreamTokenizer.TT_EOL:
-                return "EOL";
-            case StreamTokenizer.TT_NUMBER:
-                return "NUMBER";
-            case StreamTokenizer.TT_WORD:
-                return "WORD";
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-    private String resolveType(String value) {
-        return Token.getType(value);
+    public static LinkedList<Token> scan(String path) {
+        return processing(beforeProcess(path));
     }
 
 }
