@@ -22,7 +22,7 @@ public class FilesUtility {
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         } finally {
-            StringUtility.Logger("ERROR", "Empty reader will be provided.");
+            StringUtility.getLogger().Logger("ERROR", "Empty reader will be provided.");
         }
         
         return null;
@@ -38,7 +38,7 @@ public class FilesUtility {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
-            StringUtility.Logger("DONE", "File has been modifiedd sucssefully.");
+            StringUtility.getLogger().Logger("DONE", "File has been modifiedd sucssefully.");
         }
     }
 }

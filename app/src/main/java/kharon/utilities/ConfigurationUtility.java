@@ -15,18 +15,19 @@ import java.util.stream.Collectors;
  */
 public class ConfigurationUtility {
 
-    private static String PATH_TO_CONFIGURATION = "/home/kotbi/Documents/Projects/kharon/app/src/main/resources/configuration.properties";
+    private static String PATH_TO_CONFIGURATION = ClassLoader.getSystemResource("test").getPath().replace("test", "") + "/configuration.properties";
 
     public static void setPath(String path) {
         PATH_TO_CONFIGURATION = path;
     }
 
     public static void resetPath() {
-        PATH_TO_CONFIGURATION = "/home/kotbi/Documents/Projects/kharon/app/src/main/resources/configuration.properties";
+        PATH_TO_CONFIGURATION = ClassLoader.getSystemResource("test").getPath().replace("test", "") + "/configuration.properties";
+
     }
 
     public static Optional<String> getProperty(String key) {
-        StringUtility.Logger("DEBUG", "The key reached was: " + key + ".");
+        StringUtility.getLogger().Logger("DEBUG", "The key reached was: " + key + ".");
         return Optional.of(getProperties().getProperty(key));
     }
 

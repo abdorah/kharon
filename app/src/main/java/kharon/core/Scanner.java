@@ -56,7 +56,7 @@ public class Scanner {
             // resolveType(type, scanner.streamTokenizer.ttype);
             program.add(new Token(type, value, ""));
         } catch (IOException ioe) {
-            StringUtility.Logger("ERROR", "End of file reached without reading anything");
+            StringUtility.getLogger().Logger("ERROR", "End of file reached without reading anything");
             ioe.printStackTrace();
         }
 
@@ -67,11 +67,11 @@ public class Scanner {
                 type = Token.getType(value != null ? value : "hello");
                 program.add(new Token(type, value, ""));
             } catch (IOException ioe) {
-                StringUtility.Logger("ERROR", "End of file wasn't reached. Something went wrong while processing.");
+                StringUtility.getLogger().Logger("ERROR", "End of file wasn't reached. Something went wrong while processing.");
                 ioe.printStackTrace();
             }
         }
-        StringUtility.Logger("INFO", "End of file reached. Process is done successfully");
+        StringUtility.getLogger().Logger("INFO", "End of file reached. Process is done successfully");
         return program;
     }
 
