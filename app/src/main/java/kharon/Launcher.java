@@ -14,9 +14,14 @@ import kharon.utilities.StringUtility;
 public class Launcher {
 
     private static void launch(String readPath, String writePath) {
+        StringUtility.getLogger().Logger("TEST", readPath);
         StringUtility.desactivateLogger();
-        Scanner.scan(readPath).forEach(System.out::println);
-        Parser.parse(Scanner.scan(readPath)).forEach(System.out::println);
+        String scannerResult = Scanner.scan(readPath).toString();
+        String parserResult = Parser.parse(Scanner.scan(readPath)).toString();
+        StringUtility.reactivateLogger();
+        StringUtility.getLogger().Logger("TEST", scannerResult);
+        StringUtility.getLogger().Logger("TEST", parserResult);
+        StringUtility.desactivateLogger();
         Binder.bind(Parser.parse(Scanner.scan(readPath)), writePath);
     }
 

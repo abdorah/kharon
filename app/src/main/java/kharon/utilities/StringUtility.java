@@ -11,14 +11,16 @@ public class StringUtility {
     public static StringUtility logger;
     private static boolean loggerState;
 
-    {
-        loggerState = true;
+    static {
+        logger = new StringUtility(true);
     }
 
-    private StringUtility() { }
+    private StringUtility(boolean loggerState) {
+        StringUtility.loggerState = loggerState;
+    }
 
     public static StringUtility getLogger() {
-        return logger;
+        return StringUtility.logger;
     }
 
     public static boolean practiclyEqual(String value1, String value2) {
@@ -31,7 +33,7 @@ public class StringUtility {
         System.out.println(text.append(DateTimeFormatter.ofPattern("dd/MM/yyyy-HH:mm:ss").format(LocalDateTime.now()))
                 .append(" [")
                 .append(level)
-                .append(" ] ")
+                .append("] ")
                 .append(log)
                 .toString());
             }
