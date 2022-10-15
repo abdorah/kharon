@@ -28,16 +28,16 @@ public class Scanner {
     private static Scanner beforeProcess(String path) {
         Scanner scanner = new Scanner();
         scanner.streamTokenizer = new StreamTokenizer(FilesUtility.read(path));
-        scanner.streamTokenizer.resetSyntax();
-        // Actual minimum-required configuration:
-        scanner.streamTokenizer.eolIsSignificant(
-                Boolean.parseBoolean(ConfigurationUtility.getProperty("scanner.eolIsSignificant").get()));
-        scanner.streamTokenizer.slashSlashComments(
-                Boolean.parseBoolean(ConfigurationUtility.getProperty("scanner.slashSlashComments").get()));
-        scanner.streamTokenizer.slashStarComments(
-                Boolean.parseBoolean(ConfigurationUtility.getProperty("scanner.slashStarComments").get()));
-        ConfigurationUtility.getProperties("scanner.ordinaryChar").stream().map(s -> s.trim().toCharArray()[0])
-                .forEach(c -> scanner.streamTokenizer.ordinaryChar(c));
+        boolean eolIsSignificant = Boolean.parseBoolean(ConfigurationUtility.getProperty("scanner.eolIsSignificant").get());
+        boolean slashSlashComments = Boolean.parseBoolean(ConfigurationUtility.getProperty("scanner.slashSlashComments").get());
+        boolean slashStarComments = Boolean.parseBoolean(ConfigurationUtility.getProperty("scanner.slashStarComments").get());
+        Character[] ordinaryChars = ConfigurationUtility.getProperties("scanner.ordinaryChar").stream().map(s -> s.trim().charAt(0)).toArray(Character[]::new);
+        scanner.streamTokenizer.eolIsSignificant(eolIsSignificant);
+        scanner.streamTokenizer.slashSlashComments(slashSlashComments);
+        scanner.streamTokenizer.slashStarComments(slashStarComments);
+        for (Character character : ordinaryChars) {
+            scanner.streamTokenizer.ordinaryChar(character.charValue());
+        }
         return scanner;
     }
 
@@ -50,10 +50,7 @@ public class Scanner {
         try {
             scanner.streamTokenizer.nextToken();
             value = scanner.streamTokenizer.sval;
-            type = Token.getType(value != null ? value : "hello");
-            // resolveValue(value, scanner.streamTokenizer.sval);
-            // resolveOrdinaryType(scanner.streamTokenizer.ttype);
-            // resolveType(type, scanner.streamTokenizer.ttype);
+            type = Token.getType(value);
             program.add(new Token(type, value, ""));
         } catch (IOException ioe) {
             StringUtility.getLogger().Logger("ERROR", "End of file reached without reading anything");
@@ -64,7 +61,7 @@ public class Scanner {
             try {
                 scanner.streamTokenizer.nextToken();
                 value = scanner.streamTokenizer.sval;
-                type = Token.getType(value != null ? value : "hello");
+                type = Token.getType(value);
                 program.add(new Token(type, value, ""));
             } catch (IOException ioe) {
                 StringUtility.getLogger().Logger("ERROR", "End of file wasn't reached. Something went wrong while processing.");

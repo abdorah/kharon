@@ -20,12 +20,10 @@ public class FilesUtility {
         try {
             return new FileReader(new File(path));
         } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
-        } finally {
             StringUtility.getLogger().Logger("ERROR", "Empty reader will be provided.");
+            fnfe.printStackTrace();
         }
-        
-        return null;
+        return null;        
     }
 
     /**
@@ -35,10 +33,9 @@ public class FilesUtility {
     public static void write(String content, String path) {
         try (PrintWriter printWriter = new PrintWriter(new File(path))) {
             Arrays.asList(content.split("\n")).forEach(printWriter::println);
+            StringUtility.getLogger().Logger("DONE", "File has been modifiedd sucssefully.");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } finally {
-            StringUtility.getLogger().Logger("DONE", "File has been modifiedd sucssefully.");
         }
     }
 }

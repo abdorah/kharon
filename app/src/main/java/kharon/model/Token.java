@@ -13,6 +13,7 @@ public record Token(String type, String value, String equivalent) {
     public static String TOKEN_TYPE = "Unknown";
 
     private static Optional<String> getTokenType(String value) {
+        if (value == null) return Optional.of("UNKNOWN");
         return ConfigurationUtility.getProperties("tokens.type")
                 .stream()
                 .map(String::toUpperCase)
